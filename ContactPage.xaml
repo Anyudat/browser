@@ -1,0 +1,164 @@
+﻿<Page x:Class="browser.Pages.ContactPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#F5F5F5">
+    <Page.Resources>
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <TextBlock x:Name="BtnText"
+                                   Text="{TemplateBinding Content}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="Gray"/>
+                            <Rectangle x:Name="Underline"
+                                   Height="2"
+                                   Width="0"
+                                   Fill="Gray"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom"
+                                   Margin="0,0,0,0"/>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Underline"
+                                                         Storyboard.TargetProperty="Width"
+                                                         To="80"
+                                                         Duration="0:0:0.2"
+                                                         AccelerationRatio="0.3"
+                                                         DecelerationRatio="0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="Underline"
+                                                         Storyboard.TargetProperty="Width"
+                                                         To="0"
+                                                         Duration="0:0:0.2"
+                                                         AccelerationRatio="0.3"
+                                                         DecelerationRatio="0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+
+    <Grid>
+
+        <Grid Margin="40,20,50,50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="Auto"/>
+                <!-- Top Navigation -->
+                <RowDefinition Height="*"/>
+                <!-- Content Panel -->
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Text="Contact Card"
+               FontSize="34"
+               FontWeight="Bold"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,16"/>
+
+            <!-- Top Navigation -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,24">
+                <Button x:Name="VersionBtn" Content="Version" Style="{StaticResource NavButtonStyle}" Click="NavButton_Click" Tag="Version" Margin="20,0"/>
+                <Button x:Name="DevelopersBtn" Content="Developers" Style="{StaticResource NavButtonStyle}" Click="NavButton_Click" Tag="Developers" Margin="20,0"/>
+                <Button x:Name="ProjectBtn" Content="Project Name" Style="{StaticResource NavButtonStyle}" Click="NavButton_Click" Tag="Project" Margin="20,0"/>
+                <Button x:Name="ToolsBtn" Content="Tools" Style="{StaticResource NavButtonStyle}" Click="NavButton_Click" Tag="Tools" Margin="20,0"/>
+                <Button x:Name="AboutUsBtn" Content="About Us" Style="{StaticResource NavButtonStyle}" Click="NavButton_Click" Tag="About Us" Margin="20,0"/>
+            </StackPanel>
+
+            <!-- Contact Card -->
+            <Border Grid.Row="2" CornerRadius="16" Background="White" Padding="24">
+                <StackPanel x:Name="ContentPanel"/>
+            </Border>
+        </Grid>
+
+
+        <!-- Vissza gomb -->
+        <Button Width="80"
+                Height="32"
+                Margin="12"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Click="Back_Click"
+                Background="Transparent"
+                BorderThickness="0"
+                Cursor="Hand"
+                ToolTip="Back to HomePage">
+
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!-- Gomb felirat -->
+                        <TextBlock x:Name="BtnText"
+                                   Text="← Back"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="Gray"/>
+
+                        <!-- Aláhúzás -->
+                        <Rectangle x:Name="Underline"
+                                   Height="2"
+                                   Width="0"
+                                   Fill="Gray"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom"
+                                   Margin="0,0,0,4"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <!-- Animált szélesség növelés -->
+                                        <DoubleAnimation Storyboard.TargetName="Underline"
+                                                         Storyboard.TargetProperty="Width"
+                                                         To="80"
+                                                         Duration="0:0:0.2"
+                                                         AccelerationRatio="0.3"
+                                                         DecelerationRatio="0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <!-- Animált vissza -->
+                                        <DoubleAnimation Storyboard.TargetName="Underline"
+                                                         Storyboard.TargetProperty="Width"
+                                                         To="0"
+                                                         Duration="0:0:0.2"
+                                                         AccelerationRatio="0.3"
+                                                         DecelerationRatio="0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+    </Grid>
+</Page>
