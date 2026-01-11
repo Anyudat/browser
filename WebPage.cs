@@ -18,11 +18,11 @@ namespace browser
         {
             browser = new ChromiumWebBrowser();
             browser.LoadUrl(URL);
-            browser.Margin = new Thickness(0, 72, 0, 0);
+            browser.Margin = new Thickness(0, 80, 0, 0);
 
             frame = new Frame
             {
-                Margin = new Thickness(0,72,0,0),
+                Margin = new Thickness(0,80,0,0),
                 NavigationUIVisibility = System.Windows.Navigation.NavigationUIVisibility.Hidden
             };
 
@@ -73,7 +73,7 @@ namespace browser
                 Width = 20,
                 Height = 20,
                 VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
                 FontWeight = FontWeights.Bold, // lehet változtatni
                 FontSize = 12,
                 Content = "x",

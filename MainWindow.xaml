@@ -13,6 +13,8 @@
         KeyboardNavigation.TabNavigation="None"
         KeyboardNavigation.ControlTabNavigation="None"
         KeyDown="Window_KeyDown"
+        MouseDown="Window_MouseDown"
+        SizeChanged="Window_SizeChanged"
         Background="White">
     <Window.Resources>
         <Image RenderOptions.BitmapScalingMode="HighQuality" Width="15" Height="15" x:Key="closeImage" Source="/Images/close.png"></Image>
@@ -27,7 +29,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <!-- Tabok -->
-        <TabControl Padding="0" PreviewMouseDown="tabControl_PreviewMouseDown" x:Name="tabControl" Grid.RowSpan="4" SelectionChanged="tabControl_SelectionChanged" PreviewKeyDown="tabControl_PreviewKeyDown" Background="Red">
+        <TabControl Padding="0" x:Name="tabControl" Grid.RowSpan="4" SelectionChanged="tabControl_SelectionChanged" PreviewKeyDown="tabControl_PreviewKeyDown" Background="Red">
             <TabControl.Template>
                 <ControlTemplate TargetType="TabControl">
                     <Grid>
@@ -35,17 +37,12 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ScrollViewer x:Name="asd" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Margin="0,0,100,0" VerticalAlignment="Center">
-                            <ScrollViewer.Resources>
-                                <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">10</sys:Double>
-                            </ScrollViewer.Resources>
-                            <TabPanel x:Name="HeaderPanel"
-                                      Panel.ZIndex ="1" 
-                                      KeyboardNavigation.TabIndex="1"
-                                      Grid.Row="0"
-                                      Margin="2,5,2,0"
-                                      IsItemsHost="true"/>
-                        </ScrollViewer>
+                        <TabPanel x:Name="HeaderPanel"
+                                    Panel.ZIndex ="1" 
+                                    KeyboardNavigation.TabIndex="1"
+                                    Grid.Row="0"
+                                    Margin="5,5,100,0"
+                                    IsItemsHost="true"/>
                         <ContentPresenter x:Name="PART_SelectedContentHost"
                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                       Margin="{TemplateBinding Padding}"
@@ -98,8 +95,7 @@
                     <Setter Property="Cursor" Value="Hand"/>
                 </Style>
             </StackPanel.Resources>
-            
-            
+
             <!-- Minimize -->
             <Button x:Name="MinimizeButton"
                 Click="MinimizeButton_Click"
@@ -124,9 +120,6 @@
 
         <!-- előre, hátra, beállítások, profil gombok, URL sáv -->
         <Grid Grid.Row="1" Background="#26FFFFFF">
-            
-
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>

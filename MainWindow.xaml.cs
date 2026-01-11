@@ -2,6 +2,7 @@
 using CefSharp.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -35,8 +36,8 @@ namespace browser
             animationTimer = new DispatcherTimer();
             animationTimer.Interval = TimeSpan.FromSeconds(1);
             animationTimer.Tick += AnimationTimer_Tick;
-            animationTimer.Start();
-            //MessageBox.Show(Login.username);    
+            //animationTimer.Start();
+            
             CreateNewTab();
             CreateAddTabButton();
             tabControl.SelectedIndex = 0;
@@ -84,6 +85,11 @@ namespace browser
         {
             WebPage page = new WebPage(headerText, url, width, ShowBrowser);
             webPages.Add(page);
+            if (currentPage != null)
+            {
+                ((Grid)webPages[webPages.IndexOf(currentPage)].closeButton.Parent).ColumnDefinitions[0].Width = new GridLength(20);
+                webPages[tabControl.SelectedIndex].closeButton.Margin = new Thickness(0);
+            }
             currentPage = page;
 
             if (tabControl.Items.Count >= 2)
@@ -107,21 +113,9 @@ namespace browser
             page.browser.FrameLoadEnd += Browser_FrameLoadEnd;
             page.browser.LoadError += Browser_LoadError;
 
-            // resize tabitems
-            //foreach (WebPage webPage in webPages)
-            //{
-            //    webPage.tabItem.Width = (Width - 200) / webPages.Count;
-            //}
+            ResizeTabs();
 
             AddressBar.Text = "";
-
-            var template = tabControl.Template;
-            ScrollViewer scv = (ScrollViewer)template.FindName("asd", tabControl);
-
-            if (scv != null)
-            {
-                scv.ScrollToRightEnd();
-            }
         }
         #endregion
 
@@ -251,6 +245,8 @@ namespace browser
 
                 webPages.Remove(clickedPage);
                 tabControl.Items.Remove(clicked);
+
+                ResizeTabs();
             }
             else
             {
@@ -349,6 +345,17 @@ namespace browser
                 }
                 else
                 {
+                    // set current pages header to show the close button and reset the last one
+                    double pageWidth = ((TabItem)tabControl.Items[0]).Width;
+                    Grid headerGrid = (Grid)webPages[tabControl.SelectedIndex].closeButton.Parent;
+                    Grid lastHeaderGrid = (Grid)currentPage.closeButton.Parent;
+
+                    if (pageWidth < 40)
+                    {
+                        lastHeaderGrid.ColumnDefinitions[0].Width = new GridLength(20);
+                        headerGrid.ColumnDefinitions[0].Width = new GridLength(0);
+                    }
+
                     currentPage = webPages[tabControl.SelectedIndex];
                     if (currentPage.tabItem.Content.GetType() == typeof(Frame))
                     {
@@ -358,13 +365,52 @@ namespace browser
                     {
                         AddressBar.Text = currentPage.browser.Address;
                     }
+                    BackButton.IsEnabled = currentPage.browser.CanGoBack;
+                    ForwardButton.IsEnabled = currentPage.browser.CanGoForward;
                 }
             }
         }
         #endregion
 
         #region window drag + fullscreen
-        
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Point mousePosition = Mouse.GetPosition(this);
+            if (mousePosition.Y <= 50)
+            {
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    // hide all windows except the main one
+                    if (favoritesWindow.Visibility == Visibility.Visible)
+                    {
+                        favoritesWindow.Visibility = Visibility.Collapsed;
+                    }
+                    if (settingsWindow.Visibility == Visibility.Visible)
+                    {
+                        settingsWindow.Visibility = Visibility.Collapsed;
+                    }
+
+                    // check if the mouse is over a header
+                    bool canMoveWindow = true;
+                    foreach (TabItem item in tabControl.Items)
+                    {
+                        if (item.IsMouseOver)
+                        {
+                            canMoveWindow = false;
+                        }
+                    }
+
+                    if (canMoveWindow)
+                    {
+                        if (e.ClickCount >= 2 && e.LeftButton == MouseButtonState.Pressed)
+                        {
+                            ToggleWindowState();
+                        }
+                        DragMove();
+                    }
+                }
+            }
+        }
         #endregion
 
         #region keybinds
@@ -573,43 +619,21 @@ namespace browser
             }
         }
 
-        private void tabControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void ResizeTabs()
         {
-            System.Windows.Point mousePosition = Mouse.GetPosition(this);
-            if (mousePosition.Y <= 50)
+            double size = (Width - 152) / tabControl.Items.Count > 200 ? 200 : (double)(Width - 152) / tabControl.Items.Count;
+            for (int i = 0; i < tabControl.Items.Count - 1; i++)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    // hide all windows except the main one
-                    if (favoritesWindow.Visibility == Visibility.Visible)
-                    {
-                        favoritesWindow.Visibility = Visibility.Collapsed;
-                    }
-                    if (settingsWindow.Visibility == Visibility.Visible)
-                    {
-                        settingsWindow.Visibility = Visibility.Collapsed;
-                    }
-
-                    // check if the mouse is over a header
-                    bool canMoveWindow = true;
-                    foreach (TabItem item in tabControl.Items)
-                    {
-                        if (item.IsMouseOver)
-                        {
-                            canMoveWindow = false;
-                        }
-                    }
-
-                    if (canMoveWindow)
-                    {
-                        if (e.ClickCount >= 2 && e.LeftButton == MouseButtonState.Pressed)
-                        {
-                            ToggleWindowState();
-                        }
-                        DragMove();
-                    }
-                }
+                Grid headerGrid = (Grid)webPages[i].closeButton.Parent;
+                TabItem tabItem = (TabItem)tabControl.Items[i];
+                headerGrid.Width = size;
+                tabItem.Width = size;
             }
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ResizeTabs();
         }
     }
 }
